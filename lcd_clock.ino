@@ -17,8 +17,8 @@ bool block_time = false;
 
 void setup() {
   pinMode(button, INPUT_PULLUP);
+  lcd.begin(16, 2);
   lcd.clear();
-  lcd.leftToRight();
   
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   while (WiFi.status() != WL_CONNECTED) delay(500);
@@ -28,20 +28,18 @@ void setup() {
   setenv("TZ", "EST5EDT,M3.2.0,M11.1.0", 1);
   tzset();
 
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("CLOCK");
 }
 
 void loop() {
-
   // Print the time?
   if (!block_time) {
     struct tm now;
     getLocalTime(&now);
-    int now_min = now.tm_min;
-    if (was_pressed || (minute != now_min)) {
+    if (was_pressed || (minute != now.tm_min)) {
       int hour = now.tm_hour;
-      minute = now_min;
+      minute = now.tm_min;
 
       // Print the time!
       char time[6];
@@ -53,8 +51,11 @@ void loop() {
       time[4] = '0' + (minute % 10);
 
       lcd.clear();
-      lcd.setCursor(0,0);
+
+      lcd.setCursor(5, 0);
       lcd.print(time);
+      lcd.setCursor(0, 1);
+      lcd.print("New York");
 
       was_pressed = false;
     }
